@@ -1,6 +1,7 @@
 __pycache__
 .pytest_cache
 .venv
+.idea
 allure-*
 *.png
 *.har

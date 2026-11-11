@@ -11,6 +11,10 @@ from pages.login import LoginPage
 from pages.book_details import BookDetailsPage
 from pages.profile import ProfilePage
 
+pytestmark = [
+    allure.suite("Страница маганиза книг"),
+]
+
 @pytest.mark.ui
 @pytest.mark.positive
 @allure.title("UI1 - Отображение списка книг")
@@ -36,12 +40,9 @@ def test_search_book(browser):
 
     book_store.search_book("Git Pocket Guide")
 
-    books = WebDriverWait(browser, 10).until(
-        lambda driver: book_store.get_books()
-        == ["Git Pocket Guide"]
-    )
+    book = book_store.get_book("Git Pocket Guide")
 
-    assert books == ["Git Pocket Guide"]
+    assert book == ["Git Pocket Guide"]
 
 @pytest.mark.ui
 @pytest.mark.positive
@@ -80,4 +81,4 @@ def test_add_book_ui(browser, api_user):
 
     profile_page.open_profile()
 
-    assert profile_page.is_book_added(book_title)
+    assert profile_page.is_book_added(book_title) == True

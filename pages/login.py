@@ -13,19 +13,19 @@ class LoginPage(BasePage):
 
     def enter_username(self, username: str):
         username_field = self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_LOGIN_USERNAME_FIELD
+            DemoQALoginHelper.LOCATOR_LOGIN_USERNAME_FIELD
         )
         username_field.send_keys(username)
 
     def enter_password(self, password: str):
         password_field = self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_LOGIN_PASSWORD_FIELD
+            DemoQALoginHelper.LOCATOR_LOGIN_PASSWORD_FIELD
         )
         password_field.send_keys(password)
 
     def click_login(self):
         login_button = self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_SUBMIT_BUTTON
+            DemoQALoginHelper.LOCATOR_SUBMIT_BUTTON
         )
         login_button.click()
 
@@ -36,17 +36,17 @@ class LoginPage(BasePage):
 
     def clear(self):
         username_field = self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_LOGIN_USERNAME_FIELD
+            DemoQALoginHelper.LOCATOR_LOGIN_USERNAME_FIELD
         )
         username_field.clear()
 
         password_field = self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_LOGIN_PASSWORD_FIELD
+            DemoQALoginHelper.LOCATOR_LOGIN_PASSWORD_FIELD
         )
         password_field.clear()
 
     def get_error_message(self):
-        locator = DemoQALoginHelper.LOCATOR_DEMOQA_ERROR_MESSAGE
+        locator = DemoQALoginHelper.LOCATOR_ERROR_MESSAGE
 
         WebDriverWait(self.browser, 10).until(
             EC.text_to_be_present_in_element(
@@ -57,7 +57,7 @@ class LoginPage(BasePage):
 
     def get_profile_username(self):
         return self.find_element(
-            DemoQALoginHelper.LOCATOR_DEMOQA_PROFILE_USERNAME
+            DemoQALoginHelper.LOCATOR_PROFILE_USERNAME
         ).text
 
 

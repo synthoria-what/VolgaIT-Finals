@@ -1,3 +1,4 @@
+import time
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -27,7 +28,7 @@ class BookDetailsPage(BasePage):
 
         button.click()
 
-        alert = WebDriverWait(self.browser, 10).until(
+        alert = WebDriverWait(self.browser, 20).until(
             EC.alert_is_present()
         )
 

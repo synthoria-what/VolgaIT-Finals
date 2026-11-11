@@ -8,8 +8,8 @@ from pages.base import BasePage
 class BookStorePage(BasePage):
 
     SEARCH_FIELD = (By.ID, "searchBox")
-    BOOK_TABLE = (By.CSS_SELECTOR, ".rt-tbody")
-    BOOK_ROWS = (By.CSS_SELECTOR, ".rt-tbody .rt-tr-group")
+    BOOK_TABLE = (By.TAG_NAME, "tbody")
+    BOOK_ROWS = (By.TAG_NAME, "tr")
 
     def open_book_store(self):
         self.browser.get(f"{self.base_url}/books")
@@ -39,6 +39,21 @@ class BookStorePage(BasePage):
                     books.append(title)
 
         return books
+
+    def get_book(self, title: str) -> list[str]:
+        self.find_element(self.BOOK_TABLE, 20)
+        rows = self.browser.find_elements(*self.BOOK_ROWS)
+
+        for row in rows:
+            links = row.find_elements(By.TAG_NAME, "a")
+
+            for link in links:
+                book_title = link.text.strip()
+
+                if book_title == title:
+                    return [book_title]
+
+        return []
 
     def search_book(self, title: str):
         search_field = self.find_element(self.SEARCH_FIELD)

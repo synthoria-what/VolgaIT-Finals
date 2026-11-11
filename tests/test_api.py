@@ -11,6 +11,10 @@ def get_first_isbn(api):
     assert books, "Book Store returned an empty catalog"
     return books[0]["isbn"]
 
+pytestmark = [
+    allure.suite("API")
+]
+
 @pytest.mark.api
 @pytest.mark.positive
 @allure.title("API1 - Получение списка всех книг")
