@@ -1,0 +1,8 @@
+[pytest]
+markers = [
+    "positive",
+    "negative",
+    "ui",
+    "api"
+]
+addopts = ["--alluredir=allure-results"]
