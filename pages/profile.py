@@ -1,3 +1,4 @@
+import allure
 from selenium.common import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,6 +12,7 @@ class ProfilePage(BasePage):
         self.browser.get(f"{self.base_url}/profile")
 
     def get_books(self):
+        with allure.step(f"Получаем книги"):
             table = self.find_element(DemoQAProfileHelper.LOCATOR_PROFILE_TABLE)
 
             books = table.find_elements(*DemoQAProfileHelper.LOCATOR_PROFILE_BOOK_ROWS)

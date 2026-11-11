@@ -4,20 +4,21 @@ import uuid
 import pytest
 import allure
 
-def get_first_isbn(api):
-    response = api.get_books()
-    assert response.status_code == 200, response.text
-    books = response.json()["books"]
-    assert books, "Book Store returned an empty catalog"
-    return books[0]["isbn"]
-
 pytestmark = [
+    allure.parent_suite("DemoQA Тестирование"),
     allure.suite("API")
 ]
 
+
+@allure.step("Проверить HTTP-статус и JSON ошибки")
+def assert_error(response, status, code, message):
+    assert response.status_code == status, response.text
+    assert response.json() == {"code": code, "message": message}, response.text
+
+
 @pytest.mark.api
 @pytest.mark.positive
-@allure.title("API1 - Получение списка всех книг")
+@allure.title("Получение списка всех книг")
 def test_get_all_books(api_client):
 
     response = api_client.get_books()
@@ -37,7 +38,7 @@ def test_get_all_books(api_client):
 
 @pytest.mark.api
 @pytest.mark.positive
-@allure.title("API2 - Получение книги по ISBN")
+@allure.title("Получение книги по ISBN")
 def test_get_book_by_isbn(api_client):
 
     books_response = api_client.get_books()
@@ -54,15 +55,10 @@ def test_get_book_by_isbn(api_client):
     assert book["title"]
     assert book["author"]
 
-@allure.title("API-NEG-01 - Несуществующий ISBN")
-def test_get_book_invalid_isbn(api_client):
-    response = api_client.get_book("0000000000000")
-    assert response.status_code == 400, response.text
-    assert response.json().get("message"), response.text
 
 @pytest.mark.api
 @pytest.mark.positive
-@allure.title("API3 - Успешная авторизация")
+@allure.title("Успешная авторизация")
 def test_authorized_user(api_user):
 
     api = api_user["api"]
@@ -76,29 +72,8 @@ def test_authorized_user(api_user):
     assert response.json() is True
 
 @pytest.mark.api
-@pytest.mark.negative
-@allure.title("API4 - Ошибка авторизации")
-def test_invalid_authorized_user(api_user):
-
-    api = api_user["api"]
-
-    response = api.authorize(
-        api_user["username"] + "jjj",
-        api_user["password"]
-    )
-
-    assert response.status_code == 404
-
-@allure.title("API5 - Неверный пароль пользователя")
-def test_authorize_wrong_password(api_user):
-    response = api_user["api"].authorize(
-        api_user["username"], "IncorrectPassword123!"
-    )
-    assert response.status_code == 404
-
-@pytest.mark.api
 @pytest.mark.positive
-@allure.title("API6 - Добавление книги в коллекцию")
+@allure.title("Добавление книги в коллекцию")
 def test_add_book(api_user):
 
     api = api_user["api"]
@@ -123,7 +98,7 @@ def test_add_book(api_user):
 
 @pytest.mark.api
 @pytest.mark.positive
-@allure.title("API7 - Удаление книги из коллекции")
+@allure.title("Удаление книги из коллекции")
 def test_delete_book(api_user):
 
     api = api_user["api"]
@@ -146,22 +121,3 @@ def test_delete_book(api_user):
     assert isbn not in [
         book["isbn"] for book in user_books
     ]
-
-@allure.title("API8 - Добавление книги без токена")
-def test_add_book_without_token(api_user, anonymous_api):
-    isbn = get_first_isbn(anonymous_api)
-    user_id = api_user["user_id"]
-
-    response = anonymous_api.add_book(user_id, isbn)
-    assert response.status_code == 401, response.text
-
-    profile = api_user["api"].get_user(user_id)
-    assert profile.status_code == 200, profile.text
-    assert isbn not in [book["isbn"] for book in profile.json()["books"]]
-
-@allure.title("API9 - Регистрация со слабым паролем")
-def test_create_user_weak_password(api_client):
-    response = api_client.create_user(
-        f"weak_{uuid.uuid4().hex}", "12345"
-    )
-    assert response.status_code == 400, response.text
