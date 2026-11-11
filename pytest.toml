@@ -3,7 +3,8 @@ markers = [
     "positive",
     "negative",
     "ui",
-    "api"
+    "api",
+    "e2e"
 ]
 
 addopts = ["--alluredir=allure-results"]

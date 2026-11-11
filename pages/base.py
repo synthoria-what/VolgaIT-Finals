@@ -23,3 +23,12 @@ class BasePage:
     def go_to_site(self):
         with allure.step(f"Переход на сайт: {self.base_url}"):
             return self.browser.get(self.base_url)
+
+    def click(self, locator):
+        element = WebDriverWait(self.browser, 10).until(
+            EC.element_to_be_clickable(locator)
+        )
+        self.browser.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", element
+        )
+        element.click()

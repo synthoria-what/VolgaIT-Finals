@@ -7,7 +7,7 @@ import allure
 pytestmark = [
     pytest.mark.negative,
     pytest.mark.api,
-    allure.suit("API"),
+    allure.suite("API"),
     allure.parent_suite("DemoQA Тестирование")
 ]
 

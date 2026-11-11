@@ -11,6 +11,7 @@ class BookStorePage(BasePage):
     SEARCH_FIELD = (By.ID, "searchBox")
     BOOK_TABLE = (By.TAG_NAME, "tbody")
     BOOK_ROWS = (By.TAG_NAME, "tr")
+    BOOK_LINKS = (By.CSS_SELECTOR, "tbody a")
 
     def open_book_store(self):
         with allure.step(f"Открываем книжный магазин"):
@@ -70,3 +71,9 @@ class BookStorePage(BasePage):
             book = self.find_element((By.LINK_TEXT, title))
             book.click()
 
+    def wait_for_books(self, titles):
+            WebDriverWait(self.browser, 10).until(
+                lambda _: sorted(self.get_books()) == sorted(titles),
+                message=f"Ожидались результаты поиска: {titles}",
+            )
+            return self.get_books()

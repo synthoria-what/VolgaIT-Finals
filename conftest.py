@@ -11,8 +11,10 @@ from api.book_store_api import BookStoreApi
 
 @pytest.fixture
 def browser():
-    driver = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
 
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(options=options)
     driver.set_window_size(1920, 1080)
     yield driver
 
@@ -77,6 +79,22 @@ def api_user(api_client):
         if token:
             api_client.delete_user(user_id)
 
+@pytest.fixture
+def api_user_with_books(api_user):
+    api = api_user["api"]
+    response = api.get_books()
+    assert response.status_code == 200, response.text
+    books = response.json()["books"][:2]
+    assert len(books) == 2, "Для теста нужны две книги в каталоге"
+    for book in books:
+        response = api.add_book(api_user["user_id"], book["isbn"])
+        assert response.status_code == 201, response.text
+    return {**api_user, "books": books}
+
+
+@pytest.fixture
+def user_with_books(api_user_with_books, logged_in_user):
+    return {**logged_in_user, "books": api_user_with_books["books"]}
 
 class DemoQAUser:
     username: str = "Synthoria"

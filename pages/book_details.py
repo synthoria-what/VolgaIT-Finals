@@ -39,3 +39,19 @@ class BookDetailsPage(BasePage):
             alert.accept()
 
             return message
+
+    def is_add_button_available(self):
+        # Сначала ждём загрузки карточки, чтобы отсутствие кнопки было значимым.
+        WebDriverWait(self.browser, 10).until(
+            EC.visibility_of_element_located(DemoQABookDetailsHelper.LOCATOR_BOOK_TITLE)
+        )
+        return any(element.is_displayed() and element.is_enabled()
+                   for element in self.browser.find_elements(
+                       *DemoQABookDetailsHelper.LOCATOR_ADD_BOOK_BUTTON))
+
+    def has_login_button(self):
+        return self.find_element(DemoQABookDetailsHelper.LOCATOR_LOGIN_BUTTON).is_displayed()
+
+    @allure.step("Вернуться из карточки в книжный магазин")
+    def back_to_store(self):
+        self.click(DemoQABookDetailsHelper.LOCATOR_BACK_TO_STORE)

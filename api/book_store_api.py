@@ -66,6 +66,17 @@ class BookStoreApi:
             }
         )
 
+    def add_books(self, user_id: str, isbns: list[str]):
+        return self.session.post(
+            f"{self.BASE_URL}/BookStore/v1/Books",
+            json={
+                "userId": user_id,
+                "collectionOfIsbns": [
+                    {"isbn": isbn} for isbn in isbns
+                ]
+            }
+        )
+
     def get_user(self, user_id: str):
         return self.session.get(
             f"{self.BASE_URL}/Account/v1/User/{user_id}"
